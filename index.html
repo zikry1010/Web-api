@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoneTech - Premium Phone Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .navbar {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e0e0e0;
+        }
+
+        .nav-logo i {
+            margin-right: 0.5rem;
+            color: #00c853;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #b0b0b0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #00c853;
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .nav-auth {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #username-display {
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+/* ===== PHONE CARD IMAGE FIX ===== */
+        .phone-image {
+            height: 180px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden; /* Prevents overflow */
+            border-radius: 15px 15px 0 0;
+        }
+
+        .phone-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;        /* Ensures image fills the box */
+            object-position: center;  /* Centers the image */
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .phone-image::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+            pointer-events: none;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .phone-card:hover .phone-image img {
+            transform: scale(1.08);
+        }
+
+        .phone-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: #0a0a0a;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: #0a0a0a;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 200, 83, 0.4);
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border: 2px solid #2a2a2a;
+        }
+
+        .btn-secondary:hover {
+            background: #3a3a3a;
+            border-color: #3a3a3a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(42, 42, 42, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: 2px solid #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* ===== MAIN PAGE LAYOUT ===== */
+        .section {
+            display: none;
+            padding: 100px 0 50px;
+            min-height: 100vh;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 200, 83, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .brand-name {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .brands-section {
+            margin: 4rem 0;
+            width: 100%;
+        }
+
+        .brands-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .brand-card {
+            background: rgba(30, 30, 30, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid #2a2a2a;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: #00c853;
+        }
+
+        .brand-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: #0a0a0a;
+            font-weight: bold;
+        }
+
+        .brand-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+        }
+
+        .brand-card p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .phones-section {
+            margin: 4rem 0;
+            width: 100%;
+        }
+
+        .phones-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .phones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .phone-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid #2a2a2a;
+            position: relative;
+        }
+
+        .phone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: #00c853;
+        }
+
+        .phone-image {
+            height: 180px;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #0a0a0a;
+            position: relative;
+        }
+
+        .phone-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: #0a0a0a;
+            font-size: 2rem;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .stock-badge.in-stock {
+            background: rgba(72, 187, 120, 0.9);
+        }
+
+        .stock-badge.low-stock {
+            background: rgba(237, 137, 54, 0.9);
+        }
+
+        .stock-badge.out-of-stock {
+            background: rgba(229, 62, 62, 0.9);
+        }
+
+        .admin-hover-actions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .phone-card:hover .admin-hover-actions {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon.btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-icon.btn-info {
+            background: #17a2b8;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .phone-content {
+            padding: 1.5rem;
+        }
+
+        .phone-brand {
+            font-size: 0.9rem;
+            color: #00c853;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .phone-model {
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+            color: #e0e0e0;
+        }
+
+        .phone-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00c853;
+            margin: 0.5rem 0;
+        }
+
+        .phone-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        .phone-specs span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phone-specs i {
+            width: 16px;
+            color: #00c853;
+        }
+
+        .phone-description {
+            color: #b0b0b0;
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+
+        .phone-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* ===== ADMIN FORM STYLES ===== */
+        .form-container {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .form-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .form-section h3 i {
+            color: #00c853;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00c853;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #1a1a1a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .feature-checkbox:hover {
+            background: #2a2a2a;
+        }
+
+        .feature-checkbox input[type="checkbox"] {
+            width: auto;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        /* ===== ADMIN DASHBOARD ===== */
+        .admin-dashboard {
+            padding: 100px 0 50px;
+            min-height: 100vh;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .dashboard-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .dashboard-card h3 i {
+            color: #00c853;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00c853;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 1rem;
+        }
+
+        .dashboard-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .action-card {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #00c853;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .action-card i {
+            font-size: 2.5rem;
+            color: #00c853;
+            margin-bottom: 1rem;
+        }
+
+        .action-card h4 {
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        /* ===== ADMIN PROFILE ===== */
+        .admin-profile {
+            padding: 100px 0 50px;
+            min-height: 100vh;
+        }
+
+        .admin-profile-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .admin-profile-sidebar {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .admin-profile-main {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .admin-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #2a2a2a;
+        }
+
+        .admin-profile-avatar {
+            font-size: 4rem;
+            color: #00c853;
+        }
+
+        .admin-profile-info h3 {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-profile-info p {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, #ff6b00, #ff9500);
+            color: #0a0a0a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-stat-card {
+            background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+            color: #0a0a0a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* ===== ORDERS MANAGEMENT ===== */
+        .orders-management {
+            padding: 100px 0 50px;
+            min-height: 100vh;
+        }
+
+        .orders-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .status-select {
+            padding: 8px 12px;
+            border: 2px solid #2a2a2a;
+            border-radius: 6px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: #00c853;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        th {
+            background: #1a1a1a;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.pending {
+            background: #fef5eb;
+            color: #ed8936;
+        }
+
+        .status.confirmed {
+            background: #ebf8ff;
+            color: #3182ce;
+        }
+
+        .status.shipped {
+            background: #f0fff4;
+            color: #38a169;
+        }
+
+        .status.delivered {
+            background: #f0fff4;
+            color: #38a169;
+        }
+
+        .status.cancelled {
+            background: #fed7d7;
+            color: #e53e3e;
+        }
+
+        /* ===== REPORTS ===== */
+        .reports-section {
+            padding: 100px 0 50px;
+            min-height: 100vh;
+        }
+
+        .report-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(30, 30, 30, 0.5);
+            color: #e0e0e0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #2a2a2a;
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 200, 83, 0.9);
+            color: #0a0a0a;
+        }
+
+        .report-content {
+            display: none;
+        }
+
+        .report-content.active {
+            display: block;
+        }
+
+        /* ===== OTHER PAGES (KEEPING ORIGINAL STYLES) ===== */
+        /* About Us Section */
+        .about-content {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid #2a2a2a;
+        }
+
+        .feature i {
+            font-size: 3rem;
+            color: #00c853;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+        }
+
+        .feature p {
+            color: #b0b0b0;
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 30, 0.95);
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #b0b0b0;
+        }
+
+        .faq-answer.active {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 200px;
+        }
+
+        /* Phones Section */
+        .search-filters {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-row select,
+        .filter-row input {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        /* Profile Section */
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .profile-details {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #2a2a2a;
+        }
+
+        .profile-avatar {
+            font-size: 4rem;
+            color: #00c853;
+        }
+
+        .profile-info h3 {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.guest {
+            background: #2a2a2a;
+            color: #b0b0b0;
+        }
+
+        .badge.member {
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: #0a0a0a;
+        }
+
+        .badge.admin {
+            background: linear-gradient(45deg, #ff6b00, #ff9500);
+            color: #0a0a0a;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+            color: #0a0a0a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .profile-section {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: #1a1a1a;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .profile-section h4 {
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .profile-section h4 i {
+            color: #00c853;
+            width: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .info-item span {
+            color: #b0b0b0;
+        }
+
+        .order-history {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a2a2a;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e0e0e0;
+            margin: 0;
+        }
+
+        .section-header h3 i {
+            color: #00c853;
+        }
+
+        /* Form Messages */
+        .form-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-message.success-message {
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid #00c853;
+            color: #00c853;
+        }
+
+        .form-message.error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .close-message {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00c853, #00e676);
+            color: #0a0a0a;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 200, 83, 0.6);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .brand-name {
+                font-size: 3rem;
+            }
+            
+            .description {
+                font-size: 1.1rem;
+            }
+            
+            .brands-grid,
+            .phones-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-section {
+                padding: 1rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .nav-auth {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .admin-profile-content {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .orders-filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-mobile-alt"></i>
+                <span>PhoneTech</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About Us</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+                <a href="#phones" class="nav-link">Phones</a>
+                <a href="#profile" class="nav-link">My Profile</a>
+                <!-- Admin Links -->
+                <a href="#admin-dashboard" class="nav-link admin-only">Admin Dashboard</a>
+                <a href="#admin-orders" class="nav-link admin-only">Orders</a>
+                <a href="#admin-reports" class="nav-link admin-only">Reports</a>
+                
+            </div>
+            <div class="nav-auth">
+                <a href="login.html" class="btn btn-secondary">Login</a>
+                <a href="register.html" class="btn btn-primary">Register</a>
+            </div>
+            <div id="user-info" class="user-info">
+                <span id="username-display"></span>
+                <button id="logout-btn" class="btn btn-secondary btn-small">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="hero-section">
+            <h1 class="brand-name">PhoneTech</h1>
+            <p class="description">Your premier destination for the latest smartphones and cutting-edge mobile technology. Discover the perfect device for your lifestyle.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="showSection('phones')">
+                    <i class="fas fa-shopping-bag"></i> Shop Now
+                </button>
+            </div>
+            
+            <div class="brands-section">
+                <h2 class="brands-title">Featured Brands</h2>
+                <div class="brands-grid">
+                    <div class="brand-card">
+                        <div class="brand-icon">A</div>
+                        <h3>Apple</h3>
+                        <p>Premium iPhones</p>
+                    </div>
+                    <div class="brand-card">
+                        <div class="brand-icon">S</div>
+                        <h3>Samsung</h3>
+                        <p>Innovative Galaxy</p>
+                    </div>
+                    <div class="brand-card">
+                        <div class="brand-icon">G</div>
+                        <h3>Google</h3>
+                        <p>Pixel Experience</p>
+                    </div>
+                    <div class="brand-card">
+                        <div class="brand-icon">O</div>
+                        <h3>OnePlus</h3>
+                        <p>Flagship Performance</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phones-section">
+                <h2 class="phones-title">Featured Phones</h2>
+                <div id="featured-phones" class="phones-grid">
+                    <!-- Featured phones will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        
+                <div class="phone-actions">
+                    <button class="btn btn-secondary btn-small">Out Of Stock</button>
+                    <button class="btn btn-icon btn-info"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About PhoneTech</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>PhoneTech is your trusted partner for premium smartphones. We offer the latest devices from top brands with guaranteed authenticity and competitive prices.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Authentic Products</h3>
+                            <p>100% genuine phones with warranty</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h3>Fast Delivery</h3>
+                            <p>Free shipping within 24 hours</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-headset"></i>
+                            <h3>24/7 Support</h3>
+                            <p>Round-the-clock customer service</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is your return policy?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer 30-day return policy for all products. Items must be in original condition with all accessories.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do you offer international shipping?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we ship to over 50 countries worldwide. Shipping costs and delivery times vary by location.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are the phones unlocked?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>All our phones are factory unlocked and compatible with most carriers worldwide.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How long does delivery take?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Standard delivery takes 3-5 business days. Express delivery is available for next-day arrival.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phones Section -->
+    <section id="phones" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Phone Collection</h2>
+                <button id="add-phone-btn" class="btn btn-primary admin-only" onclick="showSection('add-phone')">
+                    <i class="fas fa-plus-circle"></i> Add New Phone
+                </button>
+            </div>
+            
+            <!-- Search and Filters Section -->
+            <div class="search-filters">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search phones...">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div class="filter-row">
+                    <select id="brand-filter">
+                        <option value="">All Brands</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Google">Google</option>
+                        <option value="OnePlus">OnePlus</option>
+                    </select>
+                    <input type="number" id="min-price-filter" placeholder="Min Price">
+                    <input type="number" id="max-price-filter" placeholder="Max Price">
+                    <select id="sort-filter">
+                        <option value="newest">Newest First</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="name">Name A-Z</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <div id="phones-container" class="phones-grid">
+                <!-- Phones will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Phone Section -->
+    <section id="add-phone" class="section">
+        <div class="container">
+            <h2>Add New Phone</h2>
+            <div class="form-container">
+                <form id="add-phone-form">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="brand">Brand *</label>
+                                <select id="brand" name="brand" required>
+                                    <option value="">Select Brand</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="Google">Google</option>
+                                    <option value="OnePlus">OnePlus</option>
+                                    <option value="Xiaomi">Xiaomi</option>
+                                    <option value="Huawei">Huawei</option>
+                                    <option value="Oppo">Oppo</option>
+                                    <option value="Vivo">Vivo</option>
+                                    <option value="Realme">Realme</option>
+                                    <option value="Motorola">Motorola</option>
+                                    <option value="Nokia">Nokia</option>
+                                    <option value="Sony">Sony</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="model">Model *</label>
+                                <input type="text" id="model" name="model" required 
+                                       placeholder="e.g., iPhone 14 Pro, Galaxy S23 Ultra">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing & Stock -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-tag"></i> Pricing & Stock</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="price">Price ($) *</label>
+                                <input type="number" id="price" name="price" step="0.01" min="0" required 
+                                       placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="stock_quantity">Stock Quantity *</label>
+                                <input type="number" id="stock_quantity" name="stock_quantity" min="0" required 
+                                       placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specifications -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-cogs"></i> Specifications</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="storage">Storage *</label>
+                                <select id="storage" name="storage" required>
+                                    <option value="">Select Storage</option>
+                                    <option value="64GB">64GB</option>
+                                    <option value="128GB">128GB</option>
+                                    <option value="256GB">256GB</option>
+                                    <option value="512GB">512GB</option>
+                                    <option value="1TB">1TB</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="color">Color *</label>
+                                <input type="text" id="color" name="color" required 
+                                       placeholder="e.g., Midnight Black, Silver, Space Gray">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="screen_size">Screen Size</label>
+                                <input type="text" id="screen_size" name="screen_size" 
+                                       placeholder="e.g., 6.1 inch, 6.7 inch">
+                            </div>
+                            <div class="form-group">
+                                <label for="camera">Camera</label>
+                                <input type="text" id="camera" name="camera" 
+                                       placeholder="e.g., 48MP Main, 12MP Ultra Wide">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="battery">Battery</label>
+                                <input type="text" id="battery" name="battery" 
+                                       placeholder="e.g., 4000mAh, 5000mAh">
+                            </div>
+                            <div class="form-group">
+                                <label for="processor">Processor</label>
+                                <input type="text" id="processor" name="processor" 
+                                       placeholder="e.g., A16 Bionic, Snapdragon 8 Gen 2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media & Description -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-image"></i> Media & Description</h3>
+                        <div class="form-group">
+                            <label for="image_url">Image URL</label>
+                            <input type="url" id="image_url" name="image_url" 
+                                   placeholder="https://example.com/phone-image.jpg">
+                            <small class="help-text">Provide a direct link to the phone's image</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" rows="5" required 
+                                      placeholder="Describe the phone's features, specifications, and key selling points..."></textarea>
+                            <small class="help-text">Provide a detailed description of the phone</small>
+                        </div>
+                    </div>
+
+                    <!-- Additional Features -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-star"></i> Additional Features</h3>
+                        <div class="features-grid">
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="5G">
+                                <span>5G Connectivity</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Wireless Charging">
+                                <span>Wireless Charging</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Water Resistant">
+                                <span>Water Resistant</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Face ID">
+                                <span>Face ID/Facial Recognition</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Fingerprint">
+                                <span>Fingerprint Sensor</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Dual SIM">
+                                <span>Dual SIM</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="Fast Charging">
+                                <span>Fast Charging</span>
+                            </label>
+                            <label class="feature-checkbox">
+                                <input type="checkbox" name="features" value="OLED Display">
+                                <span>OLED Display</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="clearPhoneForm()">
+                            <i class="fas fa-eraser"></i> Clear Form
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Add Phone to Inventory
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Dashboard Section -->
+    <section id="admin-dashboard" class="section admin-dashboard admin-only">
+        <div class="container">
+            <h2><i class="fas fa-cog"></i> Admin Dashboard</h2>
+            
+            <!-- Stats Grid -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-shopping-bag"></i> Total Orders</h3>
+                    <div class="stat-value" id="admin-total-orders">0</div>
+                    <div class="stat-label">All-time orders</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-mobile-alt"></i> Products</h3>
+                    <div class="stat-value" id="admin-total-phones">0</div>
+                    <div class="stat-label">Active products</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-dollar-sign"></i> Revenue</h3>
+                    <div class="stat-value" id="admin-total-revenue">$0</div>
+                    <div class="stat-label">Total revenue</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-users"></i> Customers</h3>
+                    <div class="stat-value" id="admin-total-customers">0</div>
+                    <div class="stat-label">Registered users</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-actions">
+                <div class="action-card" onclick="showSection('add-phone')">
+                    <i class="fas fa-plus-circle"></i>
+                    <h4>Add New Phone</h4>
+                    <p>Add new products to inventory</p>
+                </div>
+                
+                <div class="action-card" onclick="showSection('admin-orders')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h4>Manage Orders</h4>
+                    <p>View and update order status</p>
+                </div>
+                
+                <div class="action-card" onclick="showSection('admin-reports')">
+                    <i class="fas fa-chart-bar"></i>
+                    <h4>View Reports</h4>
+                    <p>Sales, stock, and orders reports</p>
+                </div>
+                
+                <div class="action-card" onclick="showSection('admin-profile')">
+                    <i class="fas fa-user-cog"></i>
+                    <h4>Admin Profile</h4>
+                    <p>Manage admin account settings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Orders Section -->
+    <section id="admin-orders" class="section orders-management admin-only">
+        <div class="container">
+            <h2><i class="fas fa-clipboard-list"></i> Order Management</h2>
+            
+            <!-- Order Filters -->
+            <div class="orders-filters">
+                <div class="filter-group">
+                    <label>Status Filter:</label>
+                    <select id="status-filter" onchange="filterOrders()">
+                        <option value="all">All Orders</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button class="btn btn-secondary" onclick="loadOrders()">
+                        <i class="fas fa-sync-alt"></i> Refresh Orders
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-notice">
+                <i class="fas fa-info-circle"></i>
+                <span>You can update order status using the dropdown in the Status column</span>
+            </div>
+
+            <div class="table-container">
+                <table id="orders-management-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product</th>
+                            <th>Customer</th>
+                            <th>Contact</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Delivery Address</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Reports Section -->
+    <section id="admin-reports" class="section reports-section admin-only">
+        <div class="container">
+            <h2><i class="fas fa-chart-bar"></i> Admin Reports</h2>
+            <div class="report-tabs">
+                <button class="tab-btn active" onclick="showReport('sales')">Sales Report</button>
+                <button class="tab-btn" onclick="showReport('stock')">Stock Report</button>
+                <button class="tab-btn" onclick="showReport('orders')">Orders Report</button>
+            </div>
+            
+            <div id="sales-report" class="report-content active">
+                <h3>Sales Summary</h3>
+                <div class="table-container">
+                    <table id="sales-table">
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Orders</th>
+                                <th>Quantity Sold</th>
+                                <th>Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sales data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="stock-report" class="report-content">
+                <h3>Stock Overview</h3>
+                <div class="table-container">
+                    <table id="stock-table">
+                        <thead>
+                            <tr>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Stock Quantity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Stock data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="orders-report" class="report-content">
+                <h3>All Orders</h3>
+                <div class="table-container">
+                    <table id="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Phone</th>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Orders data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Profile Section -->
+    <section id="admin-profile" class="section admin-profile admin-only">
+        <div class="container">
+            <h2><i class="fas fa-user-cog"></i> Admin Profile</h2>
+            
+            <div class="admin-profile-content">
+                <div class="admin-profile-sidebar">
+                    <div class="admin-profile-header">
+                        <div class="admin-profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="admin-profile-info">
+                            <h3 id="admin-profile-username">Admin User</h3>
+                            <p id="admin-profile-email">admin@phonetech.com</p>
+                            <div class="admin-badge">Administrator</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-stats">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="admin-profile-orders">0</div>
+                            <div class="admin-stat-label">Orders Managed</div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="admin-profile-products">0</div>
+                            <div class="admin-stat-label">Products Added</div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="admin-profile-revenue">$0</div>
+                            <div class="admin-stat-label">Revenue Generated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-profile-main">
+                    <div class="profile-section">
+                        <h4><i class="fas fa-user-cog"></i> Account Information</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Username:</label>
+                                <span id="admin-info-username">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span id="admin-info-email">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Account Type:</label>
+                                <span id="admin-info-account-type">Administrator</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Member Since:</label>
+                                <span id="admin-info-member-since">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h4><i class="fas fa-edit"></i> Update Profile</h4>
+                        <form id="admin-update-profile-form" class="form">
+                            <div class="form-group">
+                                <label for="admin-update-username">Username</label>
+                                <input type="text" id="admin-update-username" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="admin-update-email">Email</label>
+                                <input type="email" id="admin-update-email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="admin-update-password">New Password (optional)</label>
+                                <input type="password" id="admin-update-password" name="password" placeholder="Leave blank to keep current">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Profile
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Form Section -->
+    <section id="order-phone" class="section">
+        <div class="container">
+            <h2>Place Order</h2>
+            <form id="order-form" class="form">
+                <input type="hidden" id="order-phone-id" name="phone_id">
+                <div class="phone-summary" id="order-phone-summary">
+                    <!-- Phone details will be loaded here -->
+                </div>
+                
+                <!-- Customer Information -->
+                <div class="form-section">
+                    <h4><i class="fas fa-user"></i> Customer Information</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer_name">Full Name *</label>
+                            <input type="text" id="customer_name" name="customer_name" required 
+                                   placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer_email">Email *</label>
+                            <input type="email" id="customer_email" name="customer_email" required 
+                                   placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer_phone">Phone Number *</label>
+                            <input type="tel" id="customer_phone" name="customer_phone" required 
+                                   placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity *</label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1" required 
+                                   onchange="updateOrderTotal()" oninput="updateOrderTotal()">
+                            <small class="stock-info" id="stock-info">Available: checking...</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="form-section">
+                    <h4><i class="fas fa-home"></i> Delivery Address</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="house_number">House Number *</label>
+                            <input type="text" id="house_number" name="house_number" required 
+                                   placeholder="e.g., 123">
+                        </div>
+                        <div class="form-group">
+                            <label for="street_address">Street Address *</label>
+                            <input type="text" id="street_address" name="street_address" required 
+                                   placeholder="e.g., Main Street">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="delivery_city">City *</label>
+                            <input type="text" id="delivery_city" name="delivery_city" required 
+                                   placeholder="Enter your city">
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_state">State/Province *</label>
+                            <input type="text" id="delivery_state" name="delivery_state" required 
+                                   placeholder="Enter your state">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="delivery_zip">ZIP/Postal Code *</label>
+                            <input type="text" id="delivery_zip" name="delivery_zip" required 
+                                   placeholder="Enter ZIP code">
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_country">Country *</label>
+                            <input type="text" id="delivery_country" name="delivery_country" required 
+                                   placeholder="Enter your country">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery_notes">Delivery Notes (Optional)</label>
+                        <textarea id="delivery_notes" name="delivery_notes" rows="3" 
+                                  placeholder="Any special delivery instructions, landmarks, or additional information..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h4><i class="fas fa-receipt"></i> Order Summary</h4>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="summary-subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span id="summary-shipping">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span><strong>Total:</strong></span>
+                            <span><strong id="total-price">$0.00</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-shopping-cart"></i> Place Order
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="showSection('phones')">
+                        <i class="fas fa-arrow-left"></i> Back to Phones
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+        <div class="container">
+            <h2>My Profile</h2>
+            
+            <!-- Guest User Hint -->
+            <div id="guest-profile-hint" class="registration-hint" style="display: none;">
+                <div class="hint-header">
+                    <span class="icon">💡</span>
+                    <h3>Create an Account to Unlock Features</h3>
+                </div>
+                <div class="hint-content">
+                    <p>As a guest, you can browse our products but you need an account to:</p>
+                    <ul class="hint-features">
+                        <li><i class="fas fa-check"></i> Update your profile information</li>
+                        <li><i class="fas fa-check"></i> Track your order history</li>
+                        <li><i class="fas fa-check"></i> Save your preferences</li>
+                        <li><i class="fas fa-check"></i> Get personalized recommendations</li>
+                    </ul>
+                    <div class="hint-actions">
+                        <button class="btn btn-primary" onclick="redirectToRegister()">
+                            <i class="fas fa-user-plus"></i> Register Now
+                        </button>
+                        <button class="btn btn-secondary" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <!-- Profile Details Section -->
+                <div class="profile-details">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h3 id="profile-username">Guest User</h3>
+                            <p id="profile-email">Not logged in</p>
+                            <div class="profile-badges">
+                                <span id="user-type-badge" class="badge guest">Guest</span>
+                                <span id="member-since" class="badge member-since" style="display: none;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="total-orders">0</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="total-spent">$0</div>
+                                <div class="stat-label">Total Spent</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="completed-orders">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="profile-section">
+                        <h4><i class="fas fa-user-cog"></i> Account Information</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Username:</label>
+                                <span id="info-username">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span id="info-email">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Account Type:</label>
+                                <span id="info-account-type">Guest</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Member Since:</label>
+                                <span id="info-member-since">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Update Profile Form -->
+                    <div class="profile-section" id="update-profile-section" style="display: none;">
+                        <h4><i class="fas fa-edit"></i> Update Profile</h4>
+                        <form id="update-profile-form" class="form">
+                            <div class="form-group">
+                                <label for="update-username">Username</label>
+                                <input type="text" id="update-username" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="update-email">Email</label>
+                                <input type="email" id="update-email" name="email" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Profile
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Order History Section -->
+                <div class="order-history">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Order History</h3>
+                        <button class="btn btn-secondary btn-small" onclick="refreshOrders()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="order-history-list" class="table-container">
+                        <!-- Order history will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button for Admin -->
+    <button id="fab-admin" class="fab admin-only" onclick="showSection('add-phone')">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
